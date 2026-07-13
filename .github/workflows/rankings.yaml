@@ -1,0 +1,41 @@
+name: Bot rankings
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+concurrency: rankings
+
+permissions:
+  contents: write
+
+jobs:
+  rankings:
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.GH_CLIENT_ID }}
+          private-key: ${{ secrets.GH_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - run: go run ./cmd/rankings -readme README.md
+
+      - name: Commit refreshed rankings to README
+        run: |
+          if git diff --quiet README.md; then
+            echo "rankings unchanged"
+            exit 0
+          fi
+          git config user.name "dylan-botler[bot]"
+          git config user.email "dylan-botler[bot]@users.noreply.github.com"
+          git commit -m 'readme: refresh rankings table' README.md
+          git push

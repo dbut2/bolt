@@ -1,0 +1,58 @@
+name: Submit
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      puzzles:
+        description: comma-separated puzzles or families
+      count:
+        description: runs per puzzle
+
+env:
+  DEFAULT_PUZZLES: binairo,minesweeper
+  DEFAULT_COUNT: '10'
+
+concurrency: submit
+
+permissions: {}
+
+jobs:
+  submit:
+    if: github.actor != 'dylan-botler[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.GH_CLIENT_ID }}
+          private-key: ${{ secrets.GH_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v6
+        with:
+          path: bolt
+
+      - uses: actions/checkout@v6
+        with:
+          repository: dbut2/nimbus
+          token: ${{ steps.generate-token.outputs.token }}
+          path: nimbus
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: nimbus/go.mod
+
+      - name: Solve and submit
+        working-directory: nimbus
+        run: go run . --puzzle "$PUZZLES" --count "$COUNT"
+        env:
+          PUZZLES: ${{ inputs.puzzles || env.DEFAULT_PUZZLES }}
+          COUNT: ${{ inputs.count || env.DEFAULT_COUNT }}
+
+  rankings:
+    needs: submit
+    permissions:
+      contents: write
+    secrets: inherit
+    uses: ./.github/workflows/rankings.yaml
