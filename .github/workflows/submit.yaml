@@ -30,6 +30,7 @@ jobs:
         with:
           client-id: ${{ secrets.GH_CLIENT_ID }}
           private-key: ${{ secrets.GH_PRIVATE_KEY }}
+          repositories: nimbus
 
       - uses: actions/checkout@v6
         with:
