@@ -21,6 +21,8 @@ permissions: {}
 jobs:
   submit:
     if: github.actor != 'dylan-botler[bot]'
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - id: generate-token
