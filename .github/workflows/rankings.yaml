@@ -29,13 +29,16 @@ jobs:
 
       - run: go run ./cmd/rankings -readme README.md
 
-      - name: Commit refreshed rankings to README
-        run: |
-          if git diff --quiet README.md; then
-            echo "rankings unchanged"
-            exit 0
-          fi
-          git config user.name "dylan-botler[bot]"
-          git config user.email "dylan-botler[bot]@users.noreply.github.com"
-          git commit -m 'readme: refresh rankings table' README.md
-          git push
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          branch: rankings
+          delete-branch: true
+          labels: automerge
+          add-paths: README.md
+          commit-message: 'readme: refresh rankings table'
+          title: 'readme: refresh rankings table'
+          body: beep boop beep boop, I've refreshed the rankings table
+          author: dylan-botler[bot] <dylan-botler[bot]@users.noreply.github.com>
+          committer: dylan-botler[bot] <dylan-botler[bot]@users.noreply.github.com>
