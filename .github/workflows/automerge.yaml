@@ -1,3 +1,6 @@
+# DO NOT EDIT. Synced from dbut2/x
+# https://github.com/dbut2/x/blob/main/workflow-sync/workflows/automerge.yaml
+
 name: Automerge
 
 on:
