@@ -19,7 +19,7 @@ Fast robot solvers for PuzzleTeam set of puzzles.
 <!-- rankings:begin -->
 ## Bot rankings — `dbut2`
 
-Top 3 on **44 of 45** tracked boards.
+Top 3 on **45 of 46** tracked boards.
 
 | Puzzle | Rank | Time | Leader |
 |---|---|---|---|
@@ -45,6 +45,7 @@ Top 3 on **44 of 45** tracked boards.
 | [minesweeper 15x15 easy](https://www.puzzle-minesweeper.com/hall.php?hallsize=6) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [minesweeper 20x20 easy](https://www.puzzle-minesweeper.com/hall.php?hallsize=8) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [mosaic 5x5 easy](https://www.puzzle-minesweeper.com/hall.php?hallsize=13) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
+| [mosaic 7x7 easy](https://www.puzzle-minesweeper.com/hall.php?hallsize=15) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [mosaic 10x10 easy](https://www.puzzle-minesweeper.com/hall.php?hallsize=17) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [mosaic 15x15 easy](https://www.puzzle-minesweeper.com/hall.php?hallsize=19) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [mosaic 20x20 easy](https://www.puzzle-minesweeper.com/hall.php?hallsize=21) | 🥇 1 | 00:00.004 | dbut2 (00:00.004) |
@@ -68,5 +69,5 @@ Top 3 on **44 of 45** tracked boards.
 | [sudoku 3x3 advanced](https://www.puzzle-sudoku.com/hall.php?hallsize=3) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [sudoku 3x3 extreme](https://www.puzzle-sudoku.com/hall.php?hallsize=4) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [sudoku 3x3 evil](https://www.puzzle-sudoku.com/hall.php?hallsize=5) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
-_Updated 15 Jul 2026 00:33 UTC._
+_Updated 27 Jul 2026 14:04 UTC._
 <!-- rankings:end -->
