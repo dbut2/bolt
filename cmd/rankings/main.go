@@ -55,6 +55,7 @@ var sites = []site{
 	}},
 	{"mosaic", "https://www.puzzle-minesweeper.com", []variant{
 		{"5x5 easy", 13},
+		{"7x7 easy", 15},
 		{"10x10 easy", 17},
 		{"15x15 easy", 19},
 		{"20x20 easy", 21},
