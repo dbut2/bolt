@@ -62,12 +62,12 @@ Top 3 on **45 of 46** tracked boards.
 | [slitherlink 7x7 normal](https://www.puzzle-loop.com/hall.php?hallsize=10) | 🥇 1 | 00:00.004 | dbut2 (00:00.004) |
 | [slitherlink 10x10 normal](https://www.puzzle-loop.com/hall.php?hallsize=1) | 🥇 1 | 00:00.005 | dbut2 (00:00.005) |
 | [slitherlink 15x15 normal](https://www.puzzle-loop.com/hall.php?hallsize=2) | 🥇 1 | 00:00.007 | dbut2 (00:00.007) |
-| [slitherlink 20x20 normal](https://www.puzzle-loop.com/hall.php?hallsize=3) | 🥇 1 | 00:00.014 | dbut2 (00:00.014) |
-| [slitherlink 25x30 normal](https://www.puzzle-loop.com/hall.php?hallsize=8) | not listed | — | joshprzybyszewski (00:00.060) |
+| [slitherlink 20x20 normal](https://www.puzzle-loop.com/hall.php?hallsize=3) | 🥈 2 | 00:00.014 | siebi (00:00.013) |
+| [slitherlink 25x30 normal](https://www.puzzle-loop.com/hall.php?hallsize=8) | not listed | — | siebi (00:00.014) |
 | [sudoku 3x3 easy](https://www.puzzle-sudoku.com/hall.php?hallsize=1) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [sudoku 3x3 intermediate](https://www.puzzle-sudoku.com/hall.php?hallsize=2) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [sudoku 3x3 advanced](https://www.puzzle-sudoku.com/hall.php?hallsize=3) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [sudoku 3x3 extreme](https://www.puzzle-sudoku.com/hall.php?hallsize=4) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
 | [sudoku 3x3 evil](https://www.puzzle-sudoku.com/hall.php?hallsize=5) | 🥇 1 | 00:00.003 | dbut2 (00:00.003) |
-_Updated 27 Jul 2026 14:04 UTC._
+_Updated 1 Oct 2026 01:04 UTC._
 <!-- rankings:end -->
