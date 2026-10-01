@@ -37,7 +37,7 @@ jobs:
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"
 
       - name: Required Checks
-        uses: RoryQ/required-checks@v1.2.1
+        uses: RoryQ/required-checks@v1.3.0
         with:
           required_workflow_patterns: |
             - Build Check
