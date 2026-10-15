@@ -40,12 +40,7 @@ jobs:
         uses: RoryQ/required-checks@v1.3.1
         with:
           required_workflow_patterns: |
-            - Build Check
-            - Docker Compose
-            - Go Generate
-            - Go Mod Tidy
-            - Go Test
-            - golangci-lint
+            - Go Quality
           token: ${{ steps.token.outputs.token }}
           target_sha: ${{ steps.pr-sha.outputs.sha }}
           initial_delay_seconds: 0
