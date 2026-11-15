@@ -1,6 +1,7 @@
 package mosaic
 
 import (
+	"iter"
 	"strings"
 
 	"github.com/dbut2/advent-of-code/pkg/lists"
@@ -72,8 +73,10 @@ func (b *Board) Solve() string {
 
 func (b *Board) solve() {
 	q := lists.NewQueue[space.Cell]()
-	for cell := range b.clues.Cells() {
-		q.Push(cell)
+	for i := range b.clues {
+		for j := range b.clues[i] {
+			q.Push(space.Cell{i, j})
+		}
 	}
 
 	for cell := range q.Seq {
@@ -93,7 +96,7 @@ func (b *Board) solve() {
 			uncs.Push(cell)
 		}
 
-		for n, v := range b.state.Surrounding(cell) {
+		for n, v := range surrounding(b.state, cell) {
 			switch *v {
 			case on:
 				onc++
@@ -122,8 +125,23 @@ func (b *Board) solve() {
 				b.trace(bolt.Step{Cell: next[0]*len(b.state[0]) + next[1], Value: value})
 			}
 			q.Push(next)
-			for n := range b.state.Surrounding(next) {
+			for n := range surrounding(b.state, next) {
 				q.Push(n)
+			}
+		}
+	}
+}
+
+func surrounding(g space.Grid[int], c space.Cell) iter.Seq2[space.Cell, *int] {
+	return func(yield func(space.Cell, *int) bool) {
+		for i := max(c[0]-1, 0); i <= min(c[0]+1, len(g)-1); i++ {
+			for j := max(c[1]-1, 0); j <= min(c[1]+1, len(g[i])-1); j++ {
+				if i == c[0] && j == c[1] {
+					continue
+				}
+				if !yield(space.Cell{i, j}, &g[i][j]) {
+					return
+				}
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package minesweeper
 
 import (
+	"iter"
 	"strings"
 
 	"github.com/dbut2/advent-of-code/pkg/lists"
@@ -51,8 +52,10 @@ func (b *Board) Setup(cells []int, rows, cols int) {
 
 func (b *Board) Solve() string {
 	q := lists.NewStack[space.Cell]()
-	for cell := range b.grid.Cells() {
-		q.Push(cell)
+	for i := range b.grid {
+		for j := range b.grid[i] {
+			q.Push(space.Cell{i, j})
+		}
 	}
 
 	for cell := range q.Seq {
@@ -88,7 +91,7 @@ func (b *Board) step(c space.Cell, q *lists.Stack[space.Cell]) {
 
 	var flags, _, unknowns int
 
-	for _, nv := range b.grid.Surrounding(c) {
+	for _, nv := range surrounding(b.grid, c) {
 		if nv == nil {
 			continue
 		}
@@ -107,12 +110,12 @@ func (b *Board) step(c space.Cell, q *lists.Stack[space.Cell]) {
 
 	// case remaining flags
 	if *v == unknowns+flags {
-		for nc, nv := range b.grid.Surrounding(c) {
+		for nc, nv := range surrounding(b.grid, c) {
 			if nv == nil || *nv != unknown {
 				continue
 			}
 			b.set(nc, flag, 'y')
-			for nnc, nnv := range b.grid.Surrounding(nc) {
+			for nnc, nnv := range surrounding(b.grid, nc) {
 				if nnv == nil || *nnv < 0 {
 					continue
 				}
@@ -124,12 +127,12 @@ func (b *Board) step(c space.Cell, q *lists.Stack[space.Cell]) {
 
 	// case remaining empty
 	if *v == flags {
-		for nc, nv := range b.grid.Surrounding(c) {
+		for nc, nv := range surrounding(b.grid, c) {
 			if nv == nil || *nv != unknown {
 				continue
 			}
 			b.set(nc, empty, 'n')
-			for nnc, nnv := range b.grid.Surrounding(nc) {
+			for nnc, nnv := range surrounding(b.grid, nc) {
 				if nnv == nil || *nnv < 0 {
 					continue
 				}
@@ -137,5 +140,20 @@ func (b *Board) step(c space.Cell, q *lists.Stack[space.Cell]) {
 			}
 		}
 		return
+	}
+}
+
+func surrounding(g space.Grid[int], c space.Cell) iter.Seq2[space.Cell, *int] {
+	return func(yield func(space.Cell, *int) bool) {
+		for i := max(c[0]-1, 0); i <= min(c[0]+1, len(g)-1); i++ {
+			for j := max(c[1]-1, 0); j <= min(c[1]+1, len(g[i])-1); j++ {
+				if i == c[0] && j == c[1] {
+					continue
+				}
+				if !yield(space.Cell{i, j}, &g[i][j]) {
+					return
+				}
+			}
+		}
 	}
 }

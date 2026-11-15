@@ -1,6 +1,7 @@
 package bolt_test
 
 import (
+	"slices"
 	"testing"
 
 	"dbut.dev/bolt"
@@ -36,8 +37,17 @@ func TestTrace(t *testing.T) {
 			s.(bolt.Tracer).Trace(func(step bolt.Step) { steps = append(steps, step) })
 			solution := s.Solve()
 
-			if len(steps) == 0 {
-				t.Fatal("no steps traced")
+			want := len(cells)
+			if f.Name != "mosaic" {
+				want = 0
+				for _, cell := range cells {
+					if cell < 0 {
+						want++
+					}
+				}
+			}
+			if len(steps) != want {
+				t.Fatalf("traced %d steps, want %d", len(steps), want)
 			}
 			seen := map[int]bool{}
 			for _, step := range steps {
@@ -48,6 +58,15 @@ func TestTrace(t *testing.T) {
 				if solution[step.Cell] != step.Value {
 					t.Fatalf("cell %d traced as %q, solved as %q", step.Cell, step.Value, solution[step.Cell])
 				}
+			}
+
+			again := f.New()
+			again.Setup(cells, 10, 10)
+			var repeat []bolt.Step
+			again.(bolt.Tracer).Trace(func(step bolt.Step) { repeat = append(repeat, step) })
+			again.Solve()
+			if !slices.Equal(steps, repeat) {
+				t.Fatal("trace differs between runs")
 			}
 
 			plain := f.New()

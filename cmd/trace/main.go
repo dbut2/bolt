@@ -2,29 +2,35 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"regexp"
+	"slices"
 	"time"
 
 	"dbut.dev/bolt"
 	_ "dbut.dev/bolt/all"
 )
 
+const samples = 101
+
+var client = &http.Client{Timeout: 15 * time.Second}
+
 var taskRE = regexp.MustCompile(`var task = '([^']+)'`)
 
 type puzzle struct {
-	Family   string `json:"family"`
-	Variant  string `json:"variant"`
-	Rows     int    `json:"rows"`
-	Cols     int    `json:"cols"`
-	Clues    []int  `json:"clues"`
-	Solution string `json:"solution"`
-	Order    []int  `json:"order"`
-	Micros   int64  `json:"micros"`
+	Family   string  `json:"family"`
+	Variant  string  `json:"variant"`
+	Rows     int     `json:"rows"`
+	Cols     int     `json:"cols"`
+	Clues    []int   `json:"clues"`
+	Solution string  `json:"solution"`
+	Order    []int   `json:"order"`
+	Micros   float64 `json:"micros"`
 }
 
 func fetch(url string) (string, error) {
@@ -32,13 +38,16 @@ func fetch(url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0")
+	req.Header.Set("User-Agent", "bolt-trace (+https://github.com/dbut2/bolt)")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
 	}
 	defer func() { _ = resp.Body.Close() }()
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("%s: %s", url, resp.Status)
+	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
@@ -46,7 +55,7 @@ func fetch(url string) (string, error) {
 
 	m := taskRE.FindSubmatch(body)
 	if m == nil {
-		return "", fmt.Errorf("%s: no task on page (%s)", url, resp.Status)
+		return "", fmt.Errorf("%s: no task on page", url)
 	}
 	return string(m[1]), nil
 }
@@ -61,11 +70,20 @@ func solve(f bolt.Family, variant, task string) (puzzle, error) {
 		return puzzle{}, fmt.Errorf("%s %s: parsed %d cells, want %d", f.Name, variant, len(clues), rows*cols)
 	}
 
-	start := time.Now()
-	timed := f.New()
-	timed.Setup(clues, rows, cols)
-	solution := timed.Solve()
-	micros := time.Since(start).Microseconds()
+	warm := f.New()
+	warm.Setup(clues, rows, cols)
+	solution := warm.Solve()
+
+	times := make([]time.Duration, samples)
+	for i := range times {
+		start := time.Now()
+		s := f.New()
+		s.Setup(clues, rows, cols)
+		s.Solve()
+		times[i] = time.Since(start)
+	}
+	slices.Sort(times)
+	micros := float64(times[samples/2].Nanoseconds()) / 1000
 
 	p := puzzle{f.Name, variant, rows, cols, clues, solution, []int{}, micros}
 	traced := f.New()
@@ -86,16 +104,19 @@ func run(n int, variant string, pause time.Duration) ([]puzzle, error) {
 		}
 
 		seen := map[string]bool{}
+		var failed error
 		for attempts := 0; len(seen) < n; attempts++ {
 			if attempts == 3*n {
-				return nil, fmt.Errorf("%s: only %d distinct puzzles in %d fetches", f.Name, len(seen), attempts)
+				return nil, errors.Join(fmt.Errorf("%s: only %d distinct puzzles in %d fetches", f.Name, len(seen), attempts), failed)
 			}
 			if attempts > 0 {
 				time.Sleep(pause)
 			}
 			task, err := fetch(f.Site + path)
 			if err != nil {
-				return nil, err
+				failed = err
+				fmt.Fprintln(os.Stderr, err)
+				continue
 			}
 			if seen[task] {
 				continue
