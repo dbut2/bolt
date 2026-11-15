@@ -36,6 +36,11 @@ const (
 type Board struct {
 	clues space.Grid[int]
 	state space.Grid[int]
+	trace func(bolt.Step)
+}
+
+func (b *Board) Trace(f func(bolt.Step)) {
+	b.trace = f
 }
 
 func (b *Board) Setup(cells []int, rows, cols int) {
@@ -102,17 +107,20 @@ func (b *Board) solve() {
 			continue
 		}
 
-		set := off
+		set, value := off, byte('n')
 		switch clue {
 		case onc:
 		case onc + unc:
-			set = on
+			set, value = on, 'y'
 		default:
 			continue
 		}
 
 		for next := range uncs.Seq {
 			b.state.Set(next, set)
+			if b.trace != nil {
+				b.trace(bolt.Step{Cell: next[0]*len(b.state[0]) + next[1], Value: value})
+			}
 			q.Push(next)
 			for n := range b.state.Surrounding(next) {
 				q.Push(n)

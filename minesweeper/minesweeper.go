@@ -26,7 +26,19 @@ func init() {
 }
 
 type Board struct {
-	grid space.Grid[int]
+	grid  space.Grid[int]
+	trace func(bolt.Step)
+}
+
+func (b *Board) Trace(f func(bolt.Step)) {
+	b.trace = f
+}
+
+func (b *Board) set(c space.Cell, v int, value byte) {
+	b.grid.Set(c, v)
+	if b.trace != nil {
+		b.trace(bolt.Step{Cell: c[0]*len(b.grid[0]) + c[1], Value: value})
+	}
 }
 
 func (b *Board) Setup(cells []int, rows, cols int) {
@@ -99,7 +111,7 @@ func (b *Board) step(c space.Cell, q *lists.Stack[space.Cell]) {
 			if nv == nil || *nv != unknown {
 				continue
 			}
-			b.grid.Set(nc, flag)
+			b.set(nc, flag, 'y')
 			for nnc, nnv := range b.grid.Surrounding(nc) {
 				if nnv == nil || *nnv < 0 {
 					continue
@@ -116,7 +128,7 @@ func (b *Board) step(c space.Cell, q *lists.Stack[space.Cell]) {
 			if nv == nil || *nv != unknown {
 				continue
 			}
-			b.grid.Set(nc, empty)
+			b.set(nc, empty, 'n')
 			for nnc, nnv := range b.grid.Surrounding(nc) {
 				if nnv == nil || *nnv < 0 {
 					continue

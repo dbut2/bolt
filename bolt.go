@@ -9,6 +9,17 @@ type Solver interface {
 	Solve() string
 }
 
+type Step struct {
+	Cell  int
+	Value byte
+}
+
+// Tracer is optionally implemented by a Solver. Solve reports each cell as it settles,
+// with Cell as row*cols+col and Value as the byte that cell has in Solve's result.
+type Tracer interface {
+	Trace(func(Step))
+}
+
 type Family struct {
 	Name     string
 	Site     string

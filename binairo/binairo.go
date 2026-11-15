@@ -26,7 +26,19 @@ func init() {
 }
 
 type Board struct {
-	grid space.Grid[int]
+	grid  space.Grid[int]
+	trace func(bolt.Step)
+}
+
+func (b *Board) Trace(f func(bolt.Step)) {
+	b.trace = f
+}
+
+func (b *Board) set(c space.Cell, v int) {
+	b.grid[c[0]][c[1]] = v
+	if b.trace != nil {
+		b.trace(bolt.Step{Cell: c[0]*len(b.grid[0]) + c[1], Value: byte(v + '0')})
+	}
 }
 
 func (b *Board) Setup(cells []int, rows, cols int) {
@@ -62,37 +74,37 @@ func (b *Board) Solve() string {
 			uu, dd, ll, rr := g.Get(uuc), g.Get(ddc), g.Get(llc), g.Get(rrc)
 
 			if u != nil && d != nil && *u != unknown && *u == *d {
-				*v = 1 - *u
+				b.set(cell, 1-*u)
 				changed = true
 				continue
 			}
 
 			if l != nil && r != nil && *l != unknown && *l == *r {
-				*v = 1 - *l
+				b.set(cell, 1-*l)
 				changed = true
 				continue
 			}
 
 			if u != nil && uu != nil && *u != unknown && *u == *uu {
-				*v = 1 - *u
+				b.set(cell, 1-*u)
 				changed = true
 				continue
 			}
 
 			if d != nil && dd != nil && *d != unknown && *d == *dd {
-				*v = 1 - *d
+				b.set(cell, 1-*d)
 				changed = true
 				continue
 			}
 
 			if l != nil && ll != nil && *l != unknown && *l == *ll {
-				*v = 1 - *l
+				b.set(cell, 1-*l)
 				changed = true
 				continue
 			}
 
 			if r != nil && rr != nil && *r != unknown && *r == *rr {
-				*v = 1 - *r
+				b.set(cell, 1-*r)
 				changed = true
 				continue
 			}
@@ -121,7 +133,7 @@ func (b *Board) Solve() string {
 
 			if blacks == size/2 {
 				for _, cell := range blanks {
-					g.Set(cell, white)
+					b.set(cell, white)
 				}
 				changed = true
 				continue
@@ -129,7 +141,7 @@ func (b *Board) Solve() string {
 
 			if whites == size/2 {
 				for _, cell := range blanks {
-					g.Set(cell, black)
+					b.set(cell, black)
 				}
 				changed = true
 				continue
@@ -159,7 +171,7 @@ func (b *Board) Solve() string {
 
 			if blacks == size/2 {
 				for _, cell := range blanks {
-					g.Set(cell, white)
+					b.set(cell, white)
 				}
 				changed = true
 				continue
@@ -167,7 +179,7 @@ func (b *Board) Solve() string {
 
 			if whites == size/2 {
 				for _, cell := range blanks {
-					g.Set(cell, black)
+					b.set(cell, black)
 				}
 				changed = true
 				continue
