@@ -32,17 +32,17 @@ jobs:
           private-key: ${{ secrets.GH_PRIVATE_KEY }}
           repositories: nimbus
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           path: bolt
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: dbut2/nimbus
           token: ${{ steps.generate-token.outputs.token }}
           path: nimbus
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version-file: nimbus/go.mod
 
