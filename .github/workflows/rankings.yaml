@@ -19,11 +19,11 @@ jobs:
           client-id: ${{ secrets.GH_CLIENT_ID }}
           private-key: ${{ secrets.GH_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           token: ${{ steps.generate-token.outputs.token }}
 
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
 
@@ -40,5 +40,5 @@ jobs:
           commit-message: 'readme: refresh rankings table'
           title: 'readme: refresh rankings table'
           body: beep boop beep boop, I've refreshed the rankings table
-          author: dylan-botler[bot] <dylan-botler[bot]@users.noreply.github.com>
-          committer: dylan-botler[bot] <dylan-botler[bot]@users.noreply.github.com>
+          author: dylan-botler[bot] <230545208+dylan-botler[bot]@users.noreply.github.com>
+          committer: dylan-botler[bot] <230545208+dylan-botler[bot]@users.noreply.github.com>
